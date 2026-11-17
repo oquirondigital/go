@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0806">
+<title>Obrigado · Oquíron Digital</title>
+<meta name="description" content="Uma mensagem da Oquíron Digital para você.">
+<meta property="og:title" content="Obrigado por fazer parte de 2026 com a gente">
+<meta property="og:description" content="Uma mensagem da Oquíron Digital para você.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;800&family=Manrope:wght@300;400;600&display=swap">
+<script>
+  /* ====== CONFIGURAÇÃO — edite só aqui ====== */
+  // Cole aqui o ID do vídeo do YouTube quando ele estiver pronto.
+  // Ex.: no link https://youtu.be/AbC123xYz o ID é "AbC123xYz".
+  // Enquanto estiver vazio, a página mostra o aviso "vídeo em breve".
+  var VIDEO_ID = "";
+
+  // WhatsApp que recebe as mensagens do botão (só números, com 55 e DDD).
+  var WHATSAPP = "5549999414937";
+  var WHATSAPP_MSG = "Oi! Recebi o brinde da Oquíron 🎁";
+</script>
+<style>
+:root {
+  --bg: #0a0806;
+  --surface: #15120d;
+  --line: #2b261d;
+  --fg: #f2ece0;
+  --muted: #a69c89;
+  --gold: #c9921f;
+  --gold-deep: #b17a15;
+  --gold-soft: rgba(201,146,31,.14);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  min-height: 100svh;
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(201,146,31,.16), transparent 60%),
+    var(--bg);
+  color: var(--fg);
+  font: 400 16px/1.6 "Manrope", system-ui, sans-serif;
+  padding: calc(env(safe-area-inset-top) + 28px) 18px calc(env(safe-area-inset-bottom) + 32px);
+  display: flex; justify-content: center;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 26px; }
+
+.brand { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.brand .name { font: 800 30px/1 "Sora", sans-serif; letter-spacing: -.02em; }
+.brand .sub { font: 600 9px/1 "Sora", sans-serif; letter-spacing: .5em; color: var(--muted); padding-left: .5em; }
+
+.ribbon { display: flex; align-items: center; gap: 12px; color: var(--gold); font: 600 11px/1 "Sora", sans-serif; letter-spacing: .22em; text-transform: uppercase; justify-content: center; }
+.ribbon::before, .ribbon::after { content: ""; height: 1px; width: 48px; background: linear-gradient(90deg, transparent, var(--gold)); }
+.ribbon::after { transform: scaleX(-1); }
+
+h1 { font: 800 clamp(28px, 8vw, 38px)/1.12 "Sora", sans-serif; letter-spacing: -.02em; text-align: center; margin: 0; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--gold); }
+.lede { text-align: center; color: var(--muted); margin: -8px auto 0; max-width: 36ch; }
+
+.video {
+  position: relative; aspect-ratio: 9 / 16; width: 100%; max-height: 72svh;
+  border-radius: 18px; overflow: hidden; background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 0 0 4px var(--gold-soft), 0 24px 60px rgba(0,0,0,.5);
+  margin: 0 auto;
+}
+.video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.soon { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; }
+.soon .ring { width: 68px; height: 68px; border-radius: 50%; border: 1.5px solid var(--gold); display: grid; place-items: center; margin: 0 auto 16px; animation: pulse 2.4s ease-in-out infinite; }
+.soon .ring::after { content: ""; border-left: 16px solid var(--gold); border-top: 10px solid transparent; border-bottom: 10px solid transparent; margin-left: 5px; }
+.soon b { display: block; font: 600 17px/1.3 "Sora", sans-serif; }
+.soon span { color: var(--muted); font-size: 14px; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(201,146,31,.35); } 50% { box-shadow: 0 0 0 14px rgba(201,146,31,0); } }
+
+.msg { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px 20px; }
+.msg p { margin: 0 0 12px; }
+.msg p:last-child { margin: 0; }
+.msg .sign { color: var(--muted); font-size: 14px; }
+
+.cta {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 17px 20px; border-radius: 14px; text-decoration: none;
+  background: linear-gradient(180deg, #d9a33a, var(--gold-deep));
+  color: #120d05; font: 600 16px/1 "Sora", sans-serif;
+  box-shadow: 0 10px 30px rgba(177,122,21,.35);
+  transition: transform .15s ease;
+}
+.cta:active { transform: scale(.98); }
+.cta svg { width: 20px; height: 20px; }
+.cta:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+.secondary { text-align: center; font-size: 14px; color: var(--muted); }
+.secondary a { color: var(--fg); }
+
+footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+.fade { opacity: 0; transform: translateY(10px); animation: in .7s ease forwards; }
+.d1 { animation-delay: .05s; } .d2 { animation-delay: .15s; } .d3 { animation-delay: .25s; } .d4 { animation-delay: .35s; } .d5 { animation-delay: .45s; }
+@keyframes in { to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .fade { animation: none; opacity: 1; transform: none; } .soon .ring { animation: none; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand fade d1" aria-label="Oquíron Digital">
+    <span class="name">oquíron</span>
+    <span class="sub">DIGITAL</span>
+  </div>
+
+  <div class="fade d2">
+    <p class="ribbon">Um presente para você</p>
+    <h1>Obrigado por fazer parte de <em>2026</em> com a gente.</h1>
+  </div>
+  <p class="lede fade d2" id="lede">Gravamos uma mensagem especial para você. Dá o play.</p>
+
+  <div class="video fade d3" id="video">
+    <div class="soon" id="soon">
+      <div>
+        <div class="ring" aria-hidden="true"></div>
+        <b>Vídeo chegando em breve</b>
+        <span>Volte aqui em alguns dias, é só encostar o celular na caixinha de novo.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="msg fade d4">
+    <p>Cada campanha, cada lead e cada venda que construímos juntos este ano tem um pedaço da sua confiança.</p>
+    <p>Que 2027 venha com ainda mais resultado.</p>
+    <p class="sign">Gustavo, Eduardo e Kauhana · Oquíron Digital</p>
+  </div>
+
+  <div class="fade d5">
+    <a class="cta" id="wa" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+      Responder pelo WhatsApp
+    </a>
+  </div>
+  <p class="secondary">Conheça mais em <a href="https://oquirondigital.com.br">oquirondigital.com.br</a></p>
+
+  <footer>Oquíron Digital · Chapecó/SC</footer>
+</main>
+
+<script>
+(function () {
+  var box = document.getElementById("video");
+  var id = (VIDEO_ID || "").trim();
+  if (id) {
+    var f = document.createElement("iframe");
+    f.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?rel=0&playsinline=1&modestbranding=1";
+    f.title = "Mensagem da Oquíron Digital";
+    f.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+    f.allowFullscreen = true;
+    box.innerHTML = "";
+    box.appendChild(f);
+  } else {
+    document.getElementById("lede").textContent = "Estamos preparando uma mensagem especial para você.";
+  }
+  document.getElementById("wa").href =
+    "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(WHATSAPP_MSG);
+})();
+</script>
+</body>
+</html>
