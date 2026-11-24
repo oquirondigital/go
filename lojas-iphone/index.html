@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oquíron Digital · Análise para lojas de iPhone</title>
+<meta name="description" content="Análise grátis do Instagram da sua loja de iPhone.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#07080a">
+<style>
+  @font-face{font-family:"Unageo";src:url("assets/unageo-bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+  @font-face{font-family:"Articulat";src:url("assets/articulat-light.woff2") format("woff2");font-weight:300;font-style:normal;font-display:swap}
+  :root{
+    --bg:#07080a; --panel:#121418; --panel-2:#1a1d23; --line:#23262e;
+    --text:#f2f1ee; --muted:#9a9ca5; --gold:#b17a15; --gold-2:#d9a443; --gold-glow:rgba(217,164,67,.35);
+    --cream:#f4efe4; --ink:#121316; --green:#1f9e66; --cyan:#4fd1ff;
+    --r:16px;
+    --f-title:"Unageo","Segoe UI",system-ui,sans-serif;
+    --f-text:"Articulat","Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{background:var(--bg);color:var(--text);font-family:var(--f-text);font-weight:300;font-size:16px;line-height:1.45;font-synthesis:none;
+       -webkit-font-smoothing:antialiased;overflow-x:hidden;text-align:center}
+  /* fundo: grade + brilho */
+  body::before{content:"";position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(60% 40% at 50% -5%, rgba(217,164,67,.22), transparent 70%),
+      radial-gradient(50% 35% at 50% 105%, rgba(79,209,255,.08), transparent 70%),
+      var(--bg)}
+  body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:44px 44px;
+    -webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse at 50% 30%,#000 30%,transparent 75%)}
+  button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+  input{font:inherit}
+  .app{min-height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;padding:14px 20px 26px}
+
+  /* topo */
+  .top{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;height:44px}
+  .back{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--panel);visibility:hidden}
+  .back.show{visibility:visible}
+  .back svg{width:18px;height:18px}
+  .brand{display:flex;justify-content:center}
+  .brand img{height:32px;width:auto;display:block}
+  .progress{position:relative;height:4px;background:var(--panel-2);border-radius:99px;overflow:hidden;margin-top:12px;opacity:0;transition:opacity .3s}
+  .progress.show{opacity:1}
+  .progress i{position:relative;display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-2));
+              border-radius:99px;box-shadow:0 0 12px var(--gold-glow);transition:width .5s cubic-bezier(.2,.8,.2,1);overflow:hidden}
+  .progress i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+              transform:translateX(-100%);animation:scan 2.2s infinite}
+  @keyframes scan{to{transform:translateX(100%)}}
+  .step-count{font-family:var(--f-title);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:10px;min-height:14px}
+
+  /* telas */
+  .stage{flex:1;display:flex;flex-direction:column;margin-top:22px}
+  .screen{display:none;flex-direction:column;align-items:center;animation:in .4s cubic-bezier(.2,.8,.2,1)}
+  .screen.active{display:flex}
+  .screen.back-anim{animation:inBack .4s cubic-bezier(.2,.8,.2,1)}
+  @keyframes in{from{opacity:0;transform:translateY(14px) scale(.985);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+  @keyframes inBack{from{opacity:0;transform:translateY(-14px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+  .screen > *{width:100%}
+
+  .tag{display:inline-flex;width:auto!important;align-items:center;gap:8px;font-family:var(--f-title);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+       color:var(--gold-2);background:rgba(217,164,67,.1);padding:7px 12px;border-radius:99px;margin:8px auto 18px}
+  .tag::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold-2);box-shadow:0 0 8px var(--gold-2);animation:pulse 1.6s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  h1{font-family:var(--f-title);font-weight:700;font-size:32px;line-height:1.1;letter-spacing:-.01em}
+  h1 em,h2 em{font-style:normal;background:linear-gradient(90deg,var(--gold-2),#f3d08a);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h2{font-family:var(--f-title);font-weight:700;font-size:25px;line-height:1.18;margin-bottom:22px}
+  h2 + .sub{margin-top:-16px}
+  .sub{color:#b8b9c0;font-size:16px;margin-bottom:20px}
+
+  /* opções */
+  .opts{display:grid;gap:10px}
+  .opt{position:relative;width:100%;padding:18px 16px;border-radius:var(--r);background:var(--panel);
+       font-size:17px;font-weight:300;text-align:center;transition:background .2s,transform .1s,box-shadow .2s}
+  .opt:active{transform:scale(.98)}
+  .opt:hover{background:var(--panel-2)}
+  .opt.sel{background:var(--gold);color:#111;font-weight:300;box-shadow:0 0 0 1px var(--gold-2),0 8px 30px var(--gold-glow)}
+
+  /* campos */
+  .field{margin-bottom:12px;text-align:center}
+  .input{width:100%;padding:17px 16px;border-radius:var(--r);background:var(--panel);border:1.5px solid transparent;
+         color:var(--text);font-size:17px;outline:none;text-align:center;transition:border-color .2s,box-shadow .2s}
+  .input::placeholder{color:#62646c}
+  .input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(217,164,67,.12)}
+  .input.err{border-color:#e0605a}
+  .msg{font-size:13px;color:#ef8a85;margin-top:6px}
+  .msg:empty{display:none}
+  .check{display:inline-flex!important;width:auto!important;align-items:center;justify-content:center;gap:10px;margin:6px auto 0;font-size:14px;color:var(--muted);cursor:pointer}
+  .check input{width:20px;height:20px;accent-color:var(--gold)}
+  .legal{font-size:12px;color:var(--muted);margin-top:4px}
+  .legal a{color:var(--muted)}
+
+  /* botões */
+  .btn{text-decoration:none;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:18px 20px;border-radius:var(--r);
+       background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#111;font-family:var(--f-title);font-weight:700;font-size:17px;letter-spacing:.01em;margin-top:18px;
+       box-shadow:0 10px 34px var(--gold-glow);transition:filter .15s,transform .1s}
+  .btn:active{transform:scale(.98)}
+  .btn:hover{filter:brightness(1.06)}
+  .btn[disabled]{opacity:.35;pointer-events:none;box-shadow:none}
+  .btn.wa{background:var(--green);color:#fff;box-shadow:0 10px 34px rgba(31,158,102,.35)}
+  .btn.ghost{background:none;box-shadow:none;color:var(--muted);font-family:var(--f-text);font-weight:300;font-size:15px;margin-top:6px;padding:12px}
+  .btn svg{width:20px;height:20px}
+
+  /* abertura */
+  .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:22px 0 4px}
+  .chips span{font-size:14px;font-weight:300;padding:10px 14px;border-radius:12px;background:var(--panel)}
+  .chips span b{color:var(--gold-2);font-family:var(--f-title);font-weight:700}
+  .time{font-size:12px;color:var(--muted);margin-top:12px}
+
+  /* prova curta sob a pergunta */
+  .proof{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:22px;font-size:13px;color:var(--muted)}
+  .proof .dot{width:26px;height:26px;border-radius:8px;background:var(--cream);color:var(--ink);display:grid;place-items:center;
+              font-family:var(--f-title);font-weight:700;font-size:10px}
+  .proof b{color:var(--text);font-family:var(--f-title);font-weight:700;font-size:12px}
+  .proof .ok{color:var(--green);font-family:var(--f-title)}
+
+  /* tela de resultados */
+  .results{display:grid;gap:10px;margin-bottom:8px}
+  .res{background:var(--cream);color:var(--ink);border-radius:var(--r);padding:18px 16px;position:relative;overflow:hidden}
+  .res strong{display:block;font-family:var(--f-title);font-size:38px;line-height:1}
+  .res span{display:block;font-size:15px;font-weight:300;margin-top:6px}
+  .res small{display:block;font-size:12px;color:#6b665c;margin-top:2px}
+  .res::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);
+              transform:translateX(-120%);animation:shine 3.2s infinite}
+  .res:nth-child(2)::after{animation-delay:.4s}.res:nth-child(3)::after{animation-delay:.8s}
+  @keyframes shine{40%,100%{transform:translateX(120%)}}
+  .quote{background:var(--panel);border-radius:var(--r);padding:18px;margin-top:4px}
+  .quote p{font-size:15px;line-height:1.5}
+  .quote cite{display:block;font-style:normal;font-size:13px;color:var(--gold-2);margin-top:8px;font-family:var(--f-title);font-weight:700}
+  .marquee{overflow:hidden;margin-top:18px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent);mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent)}
+  .marquee .track{display:flex;gap:8px;width:max-content;animation:slide 22s linear infinite}
+  .marquee span{font-family:var(--f-title);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:9px 12px;border-radius:10px;background:var(--panel);color:var(--muted);white-space:nowrap}
+  @keyframes slide{to{transform:translateX(-50%)}}
+  .label{font-family:var(--f-title);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:18px}
+
+  .done-ico{width:72px!important;height:72px;border-radius:22px;background:var(--green);display:grid;place-items:center;margin:4px auto 20px;
+            box-shadow:0 0 0 8px rgba(31,158,102,.12),0 0 40px rgba(31,158,102,.45)}
+  .done-ico svg{width:34px;height:34px;color:#fff}
+
+  .foot{font-size:11px;color:#6a6c74;margin-top:26px}
+  @media (min-width:600px){h1{font-size:38px}.app{padding-top:28px}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <button class="back" id="backBtn" aria-label="Voltar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="brand"><img src="assets/logo.png" alt="Oquíron Digital" width="116" height="32"></div>
+    <span></span>
+  </div>
+  <div class="progress" id="progress"><i id="bar"></i></div>
+  <div class="step-count" id="stepCount"></div>
+
+  <main class="stage">
+
+    <!-- ABERTURA -->
+    <section class="screen active" data-step="intro">
+      <div class="tag">Análise gratuita</div>
+      <h1>Sua loja de iPhone <em>vendendo mais</em> pelo Instagram</h1>
+      <div class="chips">
+        <span>Anúncios para <b>lojas de iPhone</b></span>
+        <span><b>+100</b> clientes</span>
+        <span>Análise do seu perfil</span>
+      </div>
+      <button class="btn" data-next>Começar
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <div class="time">Menos de 1 minuto</div>
+    </section>
+
+    <!-- 1 · MOTIVO -->
+    <section class="screen" data-step="motivo">
+      <h2>O que te trouxe aqui?</h2>
+      <div class="opts" data-field="motivo">
+        <button class="opt" data-value="loja">Tenho loja e quero vender mais</button>
+        <button class="opt" data-value="comprar">Quero comprar um iPhone</button>
+        <button class="opt" data-value="outro">Outro motivo</button>
+      </div>
+    </section>
+
+    <!-- 2 · FUNÇÃO -->
+    <section class="screen" data-step="funcao">
+      <h2>Sua função na loja?</h2>
+      <div class="opts" data-field="funcao">
+        <button class="opt" data-value="dono">Dono(a) ou sócio(a)</button>
+        <button class="opt" data-value="gerente">Gerente / marketing</button>
+        <button class="opt" data-value="funcionario">Funcionário(a)</button>
+      </div>
+      <div class="proof-slot"></div>
+    </section>
+
+    <!-- 3 · COMO VENDE -->
+    <section class="screen" data-step="canal">
+      <h2>Como a loja vende hoje?</h2>
+      <div class="opts" data-field="canal">
+        <button class="opt" data-value="fisica">Loja física</button>
+        <button class="opt" data-value="online">Só Instagram / WhatsApp</button>
+        <button class="opt" data-value="ambos">Os dois</button>
+      </div>
+      <div class="proof-slot"></div>
+    </section>
+
+    <!-- 4 · VOLUME -->
+    <section class="screen" data-step="volume">
+      <h2>Aparelhos vendidos <em>por mês?</em></h2>
+      <div class="opts" data-field="volume">
+        <button class="opt" data-value="menos_5">Menos de 5</button>
+        <button class="opt" data-value="5_15">De 5 a 15</button>
+        <button class="opt" data-value="15_40">De 15 a 40</button>
+        <button class="opt" data-value="mais_40">Mais de 40</button>
+      </div>
+    </section>
+
+    <!-- PROVA · RESULTADOS (meio do fluxo) -->
+    <section class="screen" data-step="prova">
+      <div class="tag">Resultados reais</div>
+      <h2>Lojas como a sua, <em>com a Oquíron</em></h2>
+      <div class="results" id="results"></div>
+      <div id="quotes"></div>
+      <div class="label">Lojas que anunciam com a gente</div>
+      <div class="marquee"><div class="track" id="marquee"></div></div>
+      <button class="btn" data-next>Continuar</button>
+    </section>
+
+    <!-- 5 · INSTAGRAM -->
+    <section class="screen" data-step="instagram">
+      <h2>Qual o @ da sua loja?</h2>
+      <p class="sub">Vamos analisar antes de conversar.</p>
+      <div class="field">
+        <input class="input" id="ig" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="@minhaloja">
+        <div class="msg" id="igMsg"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="noIg"> Ainda não tenho Instagram</label>
+      <button class="btn" id="igNext" disabled>Continuar</button>
+      <div class="proof-slot"></div>
+    </section>
+
+    <!-- 6 · CONTATO -->
+    <section class="screen" data-step="contato">
+      <h2>Para onde mandamos <em>a análise?</em></h2>
+      <div class="field">
+        <input class="input" id="nome" type="text" autocomplete="name" placeholder="Seu nome">
+        <div class="msg" id="nomeMsg"></div>
+      </div>
+      <div class="field">
+        <input class="input" id="wa" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="WhatsApp com DDD">
+        <div class="msg" id="waMsg"></div>
+      </div>
+      <div class="field">
+        <input class="input" id="cidade" type="text" autocomplete="address-level2" placeholder="Cidade da loja">
+        <div class="msg" id="cidadeMsg"></div>
+      </div>
+      <p class="legal">Ao continuar, você aceita a <a href="https://privacidade.oquirondigital.com.br" target="_blank" rel="noopener">Política de Privacidade</a>.</p>
+      <button class="btn" id="contatoNext">Continuar</button>
+    </section>
+
+    <!-- 7 · ANÚNCIOS -->
+    <section class="screen" data-step="anuncios">
+      <h2>Já investe em anúncios?</h2>
+      <div class="opts" data-field="anuncios">
+        <button class="opt" data-value="agencia">Sim, com agência</button>
+        <button class="opt" data-value="conta_propria">Sim, por conta própria</button>
+        <button class="opt" data-value="parou">Já investi, mas parei</button>
+        <button class="opt" data-value="nunca">Nunca investi</button>
+      </div>
+    </section>
+
+    <!-- 8 · DESAFIO (opcional) -->
+    <section class="screen" data-step="desafio">
+      <h2>Maior desafio hoje?</h2>
+      <div class="opts" data-field="desafio">
+        <button class="opt" data-value="poucas_vendas_ig">Poucas vendas pelo Instagram</button>
+        <button class="opt" data-value="anuncio_nao_vende">Anúncio que não traz venda</button>
+        <button class="opt" data-value="depende_indicacao">Só vendo por indicação</button>
+        <button class="opt" data-value="crescer">Crescer ou abrir outra loja</button>
+      </div>
+      <button class="btn ghost" id="skipDesafio">Pular</button>
+    </section>
+
+    <!-- FIM -->
+    <section class="screen" data-step="fim">
+      <div class="done-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h2 id="fimTitulo">Recebemos!</h2>
+      <p class="sub">Te chamamos no WhatsApp em poucos minutos.</p>
+      <a class="btn wa" id="waBtn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2z"/></svg>
+        Chamar agora
+      </a>
+    </section>
+
+    <!-- SAÍDA · NÃO É LOJA -->
+    <section class="screen" data-step="saida">
+      <h2>Obrigado!</h2>
+      <p class="sub">Somos uma agência de anúncios.<br>Não vendemos aparelhos.</p>
+      <button class="btn ghost" id="saidaVoltar">Marquei errado, voltar</button>
+    </section>
+
+  </main>
+  <div class="foot">Oquíron Digital · CNPJ 45.910.140/0001-35</div>
+</div>
+
+<script>
+/* =========================================================
+   CONFIGURAÇÃO — preencher antes de publicar
+   ========================================================= */
+const CONFIG = {
+  WEBHOOK_URL: "",            // ex: "https://n8n.oquirondigital.com.br/webhook/form-lojas-iphone"
+  PIXEL_ID: "",               // pixel/conjunto de dados da Oquíron
+  WHATSAPP: "5549999414937",  // Gustavo
+  CATEGORIA: "Lojas de celular",
+
+  // Tela "Resultados reais" (meio do fluxo). CONFIRMAR números e lojas antes de publicar.
+  // Números abaixo vieram dos nomes dos criativos de vocês (Vídeo 288 iPhones, 558 iPhones em 6 meses, Estático 221 vendas).
+  RESULTADOS: [
+    { numero: 288, prefixo: "", label: "iPhones vendidos", loja: "" },
+    { numero: 558, prefixo: "", label: "iPhones em 6 meses", loja: "" },
+    { numero: 221, prefixo: "", label: "vendas pelo Instagram", loja: "" }
+  ],
+  // Depoimentos reais (texto do cliente, com autorização). Só aparecem se preenchidos.
+  DEPOIMENTOS: [
+    // { texto: "...", autor: "Fulano · National Imports" }
+  ],
+  // Lojas exibidas na faixa animada (só quem autorizou).
+  LOJAS: ["National Imports","DinhoCel","AiCell","Playtech","Águia Cell Shop","InnovaTech","Mafetto Imports"],
+  // Prova curta sob as perguntas.
+  CASES: [
+    { sigla:"NI", loja:"National Imports", cidade:"Ponta Grossa/PR" },
+    { sigla:"DC", loja:"DinhoCel",         cidade:"Venâncio Aires/RS" },
+    { sigla:"MI", loja:"Mafetto Imports",  cidade:"Lajeado/RS" }
+  ]
+};
+
+/* ========================================================= */
+const ORDER = ["intro","motivo","funcao","canal","volume","prova","instagram","contato","anuncios","desafio"];
+const Q_STEPS = ["motivo","funcao","canal","volume","instagram","contato","anuncios","desafio"];
+const state = {
+  lead_id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)),
+  answers:{}, contato:{}, sentPartial:false, sentFinal:false, history:["intro"]
+};
+const $ = s => document.querySelector(s);
+const screens = {}; document.querySelectorAll(".screen").forEach(s => screens[s.dataset.step] = s);
+
+/* ---------- rastreio ---------- */
+const qs = new URLSearchParams(location.search), tracking = {};
+["utm_source","utm_medium","utm_campaign","utm_content","utm_term","fbclid","ad_id","adset_id","campaign_id"]
+  .forEach(k => { if (qs.get(k)) tracking[k] = qs.get(k); });
+function cookie(n){ const m = document.cookie.match("(^|;)\\s*" + n + "=([^;]+)"); return m ? m[2] : ""; }
+function fbc(){ const c = cookie("_fbc"); return c || (tracking.fbclid ? "fb.1." + Date.now() + "." + tracking.fbclid : ""); }
+
+/* ---------- Meta Pixel (opcional) ---------- */
+if (CONFIG.PIXEL_ID) {
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
+  s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', CONFIG.PIXEL_ID); fbq('track','PageView');
+}
+function px(ev, data, opts){ if (window.fbq) opts ? fbq(...ev, data || {}, opts) : fbq(...ev, data || {}); }
+
+/* ---------- prova social ---------- */
+$("#results").innerHTML = CONFIG.RESULTADOS.map(r =>
+  `<div class="res"><strong data-count="${r.numero}" data-prefix="${r.prefixo || ""}">${r.prefixo || ""}0</strong>
+   <span>${r.label}</span>${r.loja ? `<small>${r.loja}</small>` : ""}</div>`).join("");
+$("#quotes").innerHTML = CONFIG.DEPOIMENTOS.map(d =>
+  `<div class="quote"><p>“${d.texto}”</p><cite>${d.autor}</cite></div>`).join("");
+const lojas = CONFIG.LOJAS.map(l => `<span>${l}</span>`).join("");
+$("#marquee").innerHTML = lojas + lojas;
+let ci = 0;
+document.querySelectorAll(".proof-slot").forEach(slot => {
+  const c = CONFIG.CASES[ci++ % CONFIG.CASES.length]; if (!c) return;
+  slot.innerHTML = `<div class="proof"><span class="dot">${c.sigla}</span><span><b>${c.loja}</b> · ${c.cidade}</span><span class="ok">✓</span></div>`;
+});
+function countUp(){
+  document.querySelectorAll("[data-count]").forEach(el => {
+    const end = +el.dataset.count, pre = el.dataset.prefix, t0 = performance.now(), dur = 1100;
+    (function tick(t){ const p = Math.min(1,(t - t0)/dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = pre + Math.round(end * e).toLocaleString("pt-BR"); if (p < 1) requestAnimationFrame(tick); })(t0);
+  });
+}
+
+/* ---------- navegação ---------- */
+function show(step, backwards){
+  Object.values(screens).forEach(s => s.classList.remove("active","back-anim"));
+  const el = screens[step]; el.classList.add("active"); if (backwards) el.classList.add("back-anim");
+  const qi = Q_STEPS.indexOf(step), pos = ORDER.indexOf(step);
+  const showBar = pos > 0 || step === "fim";
+  $("#progress").classList.toggle("show", showBar);
+  $("#bar").style.width = step === "fim" ? "100%" : pos > 0 ? (pos / ORDER.length * 100) + "%" : "0";
+  $("#stepCount").textContent = qi >= 0 ? `${qi + 1} / ${Q_STEPS.length}` : "";
+  const lockedBack = step === "intro" || step === "fim" || (state.sentPartial && ORDER.indexOf(step) <= ORDER.indexOf("anuncios"));
+  $("#backBtn").classList.toggle("show", !lockedBack);
+  if (step === "prova") countUp();
+  window.scrollTo(0,0);
+  const f = el.querySelector("input.input"); if (f && matchMedia("(pointer:fine)").matches) setTimeout(() => f.focus(), 300);
+}
+function go(step){ state.history.push(step); show(step); }
+function next(){ const cur = state.history[state.history.length - 1]; go(ORDER[ORDER.indexOf(cur) + 1] || "fim"); }
+$("#backBtn").addEventListener("click", () => {
+  if (state.history.length <= 1) return; state.history.pop(); show(state.history[state.history.length - 1], true);
+});
+document.querySelectorAll("[data-next]").forEach(b => b.addEventListener("click", () => {
+  if (state.history.length === 1) px(["trackCustom","InicioFormulario"]);
+  next();
+}));
+
+/* ---------- escolha única ---------- */
+document.querySelectorAll(".opts").forEach(group => {
+  const field = group.dataset.field;
+  group.querySelectorAll(".opt").forEach(btn => btn.addEventListener("click", () => {
+    group.querySelectorAll(".opt").forEach(o => o.classList.remove("sel"));
+    btn.classList.add("sel"); state.answers[field] = btn.dataset.value;
+    setTimeout(() => {
+      if (field === "motivo" && btn.dataset.value !== "loja") { go("saida"); return; }
+      if (field === "desafio") { finish(); return; }
+      next();
+    }, 240);
+  }));
+});
+$("#saidaVoltar").addEventListener("click", () => { state.history.pop(); show("motivo", true); });
+$("#skipDesafio").addEventListener("click", () => { state.answers.desafio = "pulou"; finish(); });
+
+/* ---------- Instagram ---------- */
+const JUNK = new Set(["sim","nao","não","ok","teste","test","nenhum","nenhuma","naotenho","nãotenho","obrigado","obrigada",
+  "lindo","linda","bom","muitobom","loja","minhaloja","instagram","insta","x","xx","xxx","aaa","asd","asdf","qwerty","sem","nada"]);
+function cleanIg(v){ return v.trim().toLowerCase().replace(/^https?:\/\/(www\.)?instagram\.com\//,"").replace(/[/?#].*$/,"").replace(/^@+/,"").replace(/\s+/g,""); }
+function igStatus(v){
+  const h = cleanIg(v);
+  if (!h) return {ok:false,msg:""};
+  if (!/^[a-z0-9._]{2,30}$/.test(h)) return {ok:false,msg:"Use só letras, números, . e _"};
+  if (!/[a-z]/.test(h)) return {ok:false,msg:"Confere o @."};
+  return {ok:true,handle:h,junk:JUNK.has(h.replace(/[._]/g,"")) || h.length < 3};
+}
+const ig = $("#ig"), noIg = $("#noIg"), igNext = $("#igNext");
+function igRefresh(){
+  if (noIg.checked){ ig.value=""; ig.disabled=true; ig.classList.remove("err"); $("#igMsg").textContent=""; igNext.disabled=false; return; }
+  ig.disabled=false; const s = igStatus(ig.value);
+  igNext.disabled = !s.ok; ig.classList.toggle("err", !!ig.value && !s.ok); $("#igMsg").textContent = ig.value ? s.msg : "";
+}
+ig.addEventListener("input", igRefresh); noIg.addEventListener("change", igRefresh);
+ig.addEventListener("keydown", e => { if (e.key === "Enter" && !igNext.disabled) igNext.click(); });
+igNext.addEventListener("click", () => {
+  if (noIg.checked){ Object.assign(state.answers,{instagram:"",sem_instagram:true,instagram_suspeito:false}); }
+  else { const s = igStatus(ig.value); Object.assign(state.answers,{instagram:"@"+s.handle,sem_instagram:false,instagram_suspeito:s.junk}); }
+  next();
+});
+
+/* ---------- contato ---------- */
+const wa = $("#wa");
+wa.addEventListener("input", () => {
+  let d = wa.value.replace(/\D/g,""); if (d.startsWith("55") && d.length > 11) d = d.slice(2); d = d.slice(0,11);
+  let out = d; if (d.length > 2) out = `(${d.slice(0,2)}) ${d.slice(2)}`;
+  if (d.length > 7) out = `(${d.slice(0,2)}) ${d.slice(2,d.length-4)}-${d.slice(-4)}`;
+  wa.value = out; wa.classList.remove("err"); $("#waMsg").textContent = "";
+});
+function phoneOk(v){ const d = v.replace(/\D/g,""); if (d.length !== 11) return false;
+  const ddd = +d.slice(0,2); if (ddd < 11 || d[2] !== "9") return false; return !/^(\d)\1+$/.test(d.slice(2)); }
+function field(id, ok, msg){ $("#"+id).classList.toggle("err",!ok); $("#"+id+"Msg").textContent = ok ? "" : msg; return ok; }
+["nome","cidade"].forEach(id => $("#"+id).addEventListener("input", e => { e.target.classList.remove("err"); $("#"+id+"Msg").textContent=""; }));
+$("#contatoNext").addEventListener("click", () => {
+  const nome = $("#nome").value.trim(), cidade = $("#cidade").value.trim();
+  const ok = [
+    field("nome", nome.length >= 2 && /[a-zà-ú]/i.test(nome), "Digite seu nome."),
+    field("wa", phoneOk(wa.value), "Confere o número com DDD."),
+    field("cidade", cidade.length >= 3, "Digite a cidade.")
+  ].every(Boolean);
+  if (!ok) return;
+  state.contato = { nome, whatsapp:"+55" + wa.value.replace(/\D/g,""), cidade };
+  send("parcial");
+  px(["track","Lead"], { content_name:"Form Lojas iPhone" }, { eventID: state.lead_id });
+  next();
+});
+document.querySelectorAll("#nome,#wa,#cidade").forEach(i => i.addEventListener("keydown", e => { if (e.key === "Enter") $("#contatoNext").click(); }));
+
+/* ---------- sugestão de classificação (o CRM decide) ---------- */
+function sugestao(){
+  const a = state.answers;
+  if (a.instagram_suspeito) return "descartar";
+  if (a.volume === "menos_5") return "C";
+  if (a.funcao === "funcionario" && a.sem_instagram) return "C";
+  if ((a.funcao === "dono" || a.funcao === "gerente") && !a.sem_instagram) return "A";
+  return "B";
+}
+
+/* ---------- envio ---------- */
+function payload(etapa){
+  return { lead_id:state.lead_id, etapa, enviado_em:new Date().toISOString(), origem:"pagina-formulario", categoria:CONFIG.CATEGORIA,
+    contato:state.contato, respostas:state.answers, sugestao_classificacao:sugestao(),
+    rastreio:{ ...tracking, fbp:cookie("_fbp"), fbc:fbc(), pagina:location.href.split("?")[0], user_agent:navigator.userAgent } };
+}
+function beacon(body){ navigator.sendBeacon && navigator.sendBeacon(CONFIG.WEBHOOK_URL, new Blob([body],{type:"application/json"})); }
+function send(etapa){
+  if (etapa === "parcial") state.sentPartial = true;
+  if (etapa === "completo") state.sentFinal = true;
+  const body = JSON.stringify(payload(etapa));
+  if (!CONFIG.WEBHOOK_URL) { console.info("[form] WEBHOOK_URL vazio — payload:", JSON.parse(body)); return; }
+  try { fetch(CONFIG.WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body,keepalive:true}).catch(() => beacon(body)); }
+  catch(e){ beacon(body); }
+}
+addEventListener("pagehide", () => { if (state.sentPartial && !state.sentFinal) send("abandonou"); });
+
+function finish(){
+  send("completo");
+  px(["trackCustom","FormularioCompleto"], {}, { eventID: state.lead_id + "-fim" });
+  $("#fimTitulo").textContent = `Recebemos, ${state.contato.nome.split(" ")[0]}!`;
+  const igTxt = state.answers.instagram ? ` da ${state.answers.instagram}` : "";
+  const msg = `Olá! Sou ${state.contato.nome}${igTxt}, de ${state.contato.cidade}. Acabei de responder o formulário e quero a análise da minha loja.`;
+  $("#waBtn").href = `https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(msg)}`;
+  go("fim");
+}
+</script>
+</body>
+</html>
